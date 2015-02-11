@@ -17,10 +17,10 @@ namespace Stateful
 
 		public interface IConfigurator: IConfigurationProvider
 		{
-			IStateConfigurator<TActualState> ConfigureState<TActualState>()
+			IStateConfigurator<TActualState> In<TActualState>()
 				where TActualState: TState;
 
-			IEventConfigurator<TActualState, TActualEvent> ConfigureEvent<TActualState, TActualEvent>()
+			IEventConfigurator<TActualState, TActualEvent> On<TActualState, TActualEvent>()
 				where TActualState: TState
 				where TActualEvent: TEvent;
 		}
@@ -39,15 +39,15 @@ namespace Stateful
 
 			#region IConfigurator implementation
 
-			public IStateConfigurator<TActualState> ConfigureState<TActualState>()
+			public IStateConfigurator<TActualState> In<TActualState>() 
 				where TActualState: TState
 			{
 				var stateType = typeof(TActualState);
-				var stateData = _states.TryGet(stateType, TryGetMode.CreateOrFail, t => new StateConfiguration(t));
-				return new StateConfigurator<TActualState>(stateData);
+				var stateData = _states.TryGet(stateType, TryGetMode.GetOrCreate, t => new StateConfiguration(t));
+				return new StateConfigurator<TActualState>(this, stateData);
 			}
 
-			public IEventConfigurator<TActualState, TActualEvent> ConfigureEvent<TActualState, TActualEvent>()
+			public IEventConfigurator<TActualState, TActualEvent> On<TActualState, TActualEvent>()
 				where TActualState: TState
 				where TActualEvent: TEvent
 			{
@@ -71,14 +71,14 @@ namespace Stateful
 			#endregion
 		}
 
-		#endregion
-
 		#region public interface
 
 		public static IConfigurator NewConfigurator()
 		{
 			return new Configurator();
 		}
+
+		#endregion
 
 		#endregion
 	}

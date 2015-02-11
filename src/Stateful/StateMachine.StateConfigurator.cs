@@ -38,6 +38,8 @@ namespace Stateful
 			IStateConfigurator<TActualState> Name(string name);
 			IStateConfigurator<TActualState> OnEnter(Action<IStateContext<TActualState>> context);
 			IStateConfigurator<TActualState> OnExit(Action<IStateContext<TActualState>> context);
+			IEventConfigurator<TActualState, TActualEvent> On<TActualEvent>()
+				where TActualEvent: TEvent;
 		}
 
 		public interface IStateConfiguration
@@ -78,21 +80,23 @@ namespace Stateful
 		private class StateConfigurator<TActualState>: IStateConfigurator<TActualState>
 			where TActualState: TState
 		{
-			private readonly StateConfiguration _configuration;
+			private readonly Configurator _machineConfigurator;
+			private readonly StateConfiguration _stateConfiguration;
 
-			public StateConfigurator(StateConfiguration configuration)
+			public StateConfigurator(Configurator machineConfigurator, StateConfiguration stateConfiguration)
 			{
-				_configuration = configuration;
+				_machineConfigurator = machineConfigurator;
+				_stateConfiguration = stateConfiguration;
 			}
 
-			private string TextId { get { return string.Format("State({0})", _configuration.StateType.Name); } }
+			private string TextId { get { return string.Format("State({0})", _stateConfiguration.StateType.Name); } }
 
 			public IStateConfigurator<TActualState> Name(string name)
 			{
-				if (_configuration.Name != null)
+				if (_stateConfiguration.Name != null)
 					throw new InvalidOperationException(
 						string.Format("{0}.Name has been already defined.", TextId));
-				_configuration.Name = name;
+				_stateConfiguration.Name = name;
 				return this;
 			}
 
@@ -100,10 +104,10 @@ namespace Stateful
 			{
 				if (action == null)
 					throw new ArgumentNullException("action");
-				if (_configuration.OnEnter != null)
+				if (_stateConfiguration.OnEnter != null)
 					throw new InvalidOperationException(
 						string.Format("{0}.OnEnter has been already defined", TextId));
-				_configuration.OnEnter = (c, s) => action(MakeContext<TActualState>(c, s));
+				_stateConfiguration.OnEnter = (c, s) => action(MakeContext<TActualState>(c, s));
 				return this;
 			}
 
@@ -111,16 +115,22 @@ namespace Stateful
 			{
 				if (action == null)
 					throw new ArgumentNullException("action");
-				if (_configuration.OnExit != null)
+				if (_stateConfiguration.OnExit != null)
 					throw new InvalidOperationException(
 						string.Format("{0}.OnExit has been already defined", TextId));
-				_configuration.OnExit = (c, s) => action(MakeContext<TActualState>(c, s));
+				_stateConfiguration.OnExit = (c, s) => action(MakeContext<TActualState>(c, s));
 				return this;
+			}
+
+			public IEventConfigurator<TActualState, TActualEvent> On<TActualEvent>() 
+				where TActualEvent: TEvent
+			{
+				return _machineConfigurator.On<TActualState, TActualEvent>();
 			}
 
 			public override string ToString()
 			{
-				return string.Format("StateConfigurator({0})", _configuration);
+				return string.Format("StateConfigurator({0})", _stateConfiguration);
 			}
 		}
 
