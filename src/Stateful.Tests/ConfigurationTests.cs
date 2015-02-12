@@ -1,4 +1,5 @@
-﻿using NUnit.Framework;
+﻿using System;
+using NUnit.Framework;
 
 namespace Stateful.Tests
 {
@@ -14,7 +15,7 @@ namespace Stateful.Tests
 		[Test]
 		public void CanConfigureStateUsingInKeyword()
 		{
-			var configurator = StateMachine<object, object, object>.NewConfigurator();
+			var configurator = StateMachine<TContext, TState, TEvent>.NewConfigurator();
 			var stateConfigurator = configurator.In<TState>();
 		}
 
@@ -24,6 +25,22 @@ namespace Stateful.Tests
 			var configurator = StateMachine<TContext, TState, TEvent>.NewConfigurator();
 			var event1Configurator = configurator.On<TState, TEvent>();
 			var event2Configurator = configurator.In<TState>().On<TEvent>();
+		}
+
+		[Test]
+		public void CannotConfigureOnEnterTwice()
+		{
+			var configurator = StateMachine<TContext, TState, TEvent>.NewConfigurator();
+			configurator.In<TState>().OnEnter(c => { });
+			Assert.Throws<InvalidOperationException>(() => configurator.In<TState>().OnEnter(c => { }));
+		}
+
+		[Test]
+		public void CannotConfigureOnExitTwice()
+		{
+			var configurator = StateMachine<TContext, TState, TEvent>.NewConfigurator();
+			configurator.In<TState>().OnExit(c => { });
+			Assert.Throws<InvalidOperationException>(() => configurator.In<TState>().OnExit(c => { }));
 		}
 	}
 }

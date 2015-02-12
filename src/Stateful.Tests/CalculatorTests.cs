@@ -18,7 +18,7 @@ namespace Stateful.Tests
 				_operation = operation;
 			}
 
-			public void Setup(char operation)
+			public void SetupNextOperator(char operation)
 			{
 				switch (operation)
 				{
@@ -39,12 +39,12 @@ namespace Stateful.Tests
 				}
 			}
 
-			public void Push(int number)
+			public void PushNumber(int number)
 			{
 				_stack.Push(number);
 			}
 
-			public void Execute()
+			public void ExecuteLastOperator()
 			{
 				if (_operation == null)
 					return;
@@ -54,7 +54,7 @@ namespace Stateful.Tests
 				_stack.Push(_operation(delta, bravo));
 			}
 
-			public int Pop()
+			public int PopNumber()
 			{
 				return _stack.Pop();
 			}
@@ -128,18 +128,18 @@ namespace Stateful.Tests
 			config.In<CollectNumber>()
 				.On<char>().When(c => operators.Contains(c.Event))
 				.Goto(c => {
-					c.Context.Push(c.State.Number);
-					c.Context.Execute();
-					c.Context.Setup(c.Event);
+					c.Context.PushNumber(c.State.Number);
+					c.Context.ExecuteLastOperator();
+					c.Context.SetupNextOperator(c.Event);
 					return new ExpectPositive();
 				});
 
 			config.In<CollectNumber>()
 				.On<char>().When(c => c.Event == '=')
 				.Goto(c => {
-					c.Context.Push(c.State.Number);
-					c.Context.Execute();
-					return new Result(c.Context.Pop());
+					c.Context.PushNumber(c.State.Number);
+					c.Context.ExecuteLastOperator();
+					return new Result(c.Context.PopNumber());
 				});
 
 			return config.NewExecutor(new Context(), new ExpectPositive());
