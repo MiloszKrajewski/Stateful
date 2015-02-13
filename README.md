@@ -223,3 +223,38 @@ Notes of performance
 This is not the fastest state machine in the world. Approach of using classes for both states and events and allowing hierarchical definitions has it's price. It tries to cache list of potential rules, so it does calculate "inheritance distance" only once per concrete type. There is still some reflection used though, so if you need very fast switching, fine grained state machine use something or roll your own. 
 
 I would NOT recommend Stateful to implement you own Regular Expression engine. 
+
+Simple Calculator, working example
+---
+Check unit tests for working example of simple calculator. With execution method shown below:
+
+	public int Execute(string expression)
+	{
+		var calculator = CreateCalculator();
+
+		foreach (var e in expression) // char-by-char
+		{
+			calculator.Fire(e);
+			if (calculator.State is Result)
+				break;
+		}
+
+		var result = calculator.State as Result;
+		if (result == null)
+			throw new ArgumentException("Expression ended prematurely");
+
+		return result.Number;
+	}
+
+I was able to evaluate some simple expressions:
+
+	[Test]
+	public void SomeExpressions()
+	{
+		Assert.AreEqual(123, Execute("123="));
+		Assert.AreEqual(123 + 546, Execute("123+546="));
+		Assert.AreEqual(-123 - 546, Execute("-123-546="));
+		Assert.AreEqual(-123 * -356, Execute("-123*-356="));
+	}
+
+See `CalculatorTests.cs` for details.

@@ -148,15 +148,17 @@ namespace Stateful.Tests
 		public int Execute(string expression)
 		{
 			var calculator = CreateCalculator();
-			var stream = expression.GetEnumerator();
 
-			while (!(calculator.State is Result) && stream.MoveNext())
+			foreach (var e in expression)
 			{
-				calculator.Fire(stream.Current);
+				calculator.Fire(e);
+				if (calculator.State is Result)
+					break;
 			}
 
 			var result = calculator.State as Result;
-			Assert.IsNotNull(result);
+			if (result == null)
+				throw new ArgumentException("Expression ended prematurely");
 
 			return result.Number;
 		}
