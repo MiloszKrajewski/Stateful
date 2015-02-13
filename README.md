@@ -222,7 +222,7 @@ Let's imagine a class A which implements interface I and a class B which inherit
 
 Notes on performance
 ---
-This is not the fastest state machine in the world. Approach of using classes for both states and events and allowing hierarchical definitions has it's price. It tries to cache list of potential rules, so it does calculate "inheritance distance" only once per concrete type. There is still some reflection used though, so if you need very fast switching, fine grained state machine use something or roll your own. 
+This is not the fastest state machine in the world. Approach of using classes for both states and events and allowing hierarchical definitions has its price. It tries to cache list of potential rules, so it does calculate "inheritance distance" only once per concrete type. There is still some reflection used though, so if you need very fast switching, fine grained state machine use something or roll your own. 
 
 I would NOT recommend Stateful to implement you own Regular Expression engine. 
 
