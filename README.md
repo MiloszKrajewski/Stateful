@@ -220,7 +220,7 @@ will handle `IdleEvent` in all states the same way (by printing 'idle...' and st
 Definition "closer" in terms of inheritance distance takes precedence. The distance to interface is a little bit tricky so it is advised to not use interface for rule definition. It will work but results may be surprising sometimes.
 Let's imagine a class A which implements interface I and a class B which inherits from A. It is not possible to determine if B implements I on it's own (distance 1) or only because A implements it (distance 2). Stateful assumes longest inheritance path otherwise distance would be always 1.
 
-Notes of performance
+Notes on performance
 ---
 This is not the fastest state machine in the world. Approach of using classes for both states and events and allowing hierarchical definitions has it's price. It tries to cache list of potential rules, so it does calculate "inheritance distance" only once per concrete type. There is still some reflection used though, so if you need very fast switching, fine grained state machine use something or roll your own. 
 
