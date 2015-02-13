@@ -82,8 +82,10 @@ Interface:
 		public interface IStateConfigurator<out TActualState>
 			where TActualState: TState
 		{
-			IStateConfigurator<TActualState> OnEnter(Action<IStateContext<TActualState>> context);
-			IStateConfigurator<TActualState> OnExit(Action<IStateContext<TActualState>> context);
+			IStateConfigurator<TActualState> OnEnter(
+				Action<IStateContext<TActualState>> context);
+			IStateConfigurator<TActualState> OnExit(
+				Action<IStateContext<TActualState>> context);
 			IEventConfigurator<TActualState, TActualEvent> On<TActualEvent>()
 				where TActualEvent: TEvent;
 		}
