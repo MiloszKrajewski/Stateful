@@ -6,7 +6,8 @@ namespace Stateful
 	{
 		#region event context
 
-		public interface IEventContext<out TActualState, out TActualEvent>: IStateContext<TActualState>
+		public interface IEventContext<out TActualState, out TActualEvent>: 
+			IStateContext<TActualState>
 			where TActualState: TState
 			where TActualEvent: TEvent
 		{
@@ -98,9 +99,12 @@ namespace Stateful
 			where TActualEvent: TEvent
 		{
 			IEventConfigurator<TActualState, TActualEvent> Name(string name);
-			IEventConfigurator<TActualState, TActualEvent> OnTrigger(Action<IEventContext<TActualState, TActualEvent>> action);
-			IEventConfigurator<TActualState, TActualEvent> When(Func<IEventContext<TActualState, TActualEvent>, bool> predicate);
-			IEventConfigurator<TActualState, TActualEvent> Goto(Func<IEventContext<TActualState, TActualEvent>, TState> action);
+			IEventConfigurator<TActualState, TActualEvent> OnTrigger(
+				Action<IEventContext<TActualState, TActualEvent>> action);
+			IEventConfigurator<TActualState, TActualEvent> When(
+				Func<IEventContext<TActualState, TActualEvent>, bool> predicate);
+			IEventConfigurator<TActualState, TActualEvent> Goto(
+				Func<IEventContext<TActualState, TActualEvent>, TState> action);
 			IEventConfigurator<TActualState, TActualEvent> Loop();
 		}
 
