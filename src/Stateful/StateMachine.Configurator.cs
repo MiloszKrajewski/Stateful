@@ -9,12 +9,18 @@ namespace Stateful
 	{
 		#region configuration
 
+		/// <summary>
+		/// Provides state machine configuration for IExecutor.
+		/// </summary>
 		public interface IConfigurationProvider
 		{
 			IEnumerable<IStateConfiguration> States { get; }
 			IEnumerable<IEventConfiguration> Events { get; }
 		}
 
+		/// <summary>
+		/// Allow to configure state machine.
+		/// </summary>
 		public interface IConfigurator: IConfigurationProvider
 		{
 			IStateConfigurator<TActualState> In<TActualState>()
@@ -25,6 +31,9 @@ namespace Stateful
 				where TActualEvent: TEvent;
 		}
 
+		/// <summary>
+		/// Implementation of <see cref="IConfigurator"/>
+		/// </summary>
 		private class Configurator: IConfigurator
 		{
 			#region fields
@@ -39,7 +48,7 @@ namespace Stateful
 
 			#region IConfigurator implementation
 
-			public IStateConfigurator<TActualState> In<TActualState>() 
+			public IStateConfigurator<TActualState> In<TActualState>()
 				where TActualState: TState
 			{
 				var stateType = typeof(TActualState);
@@ -73,6 +82,8 @@ namespace Stateful
 
 		#region public interface
 
+		/// <summary>Create new state moachine configurator.</summary>
+		/// <returns>New configurator.</returns>
 		public static IConfigurator NewConfigurator()
 		{
 			return new Configurator();
