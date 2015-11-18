@@ -128,7 +128,7 @@ Example:
 	configurator.In<State1>().On<Event1>()
 		.OnTrigger(c => Console.WriteLine("Triggered!"))
 		.When(c => c.Event.Sender.Name == "Mike")
-		.Goto(c => new TState2("Got here because of Mike"));
+		.Goto(c => new State2("Got here because of Mike"));
 
 IStateContext and IEventContext
 ---
