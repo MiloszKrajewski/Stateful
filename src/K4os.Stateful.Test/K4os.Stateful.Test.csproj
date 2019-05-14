@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>netcoreapp2.0</TargetFramework>
@@ -7,5 +7,6 @@
   <ItemGroup>
     <ProjectReference Include="..\K4os.Stateful\K4os.Stateful.csproj" />
   </ItemGroup>
+  <Import Project="..\..\Common.targets" />
   <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>

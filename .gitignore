@@ -2,11 +2,14 @@
 .vscode/
 .fake/
 .paket/
-.tools/
 .output/
 .idea/
 paket-files/
-.secrets.config
+packages/
 
 **/bin/
 **/obj/
+
+.secrets.cfg
+
+*.bak
